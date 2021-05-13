@@ -95,7 +95,7 @@ def enableSeparateBuildPerCPUArchitecture = false
 /**
  * Run Proguard to shrink the Java bytecode in release builds.
  */
-def enableProguardInReleaseBuilds = true
+def enableProguardInReleaseBuilds = false
 
 /**
  * The preferred build flavor of JavaScriptCore.
@@ -118,16 +118,10 @@ def jscFlavor = 'org.webkit:android-jsc:+'
  * and the benefits of using Hermes will therefore be sharply reduced.
  */
 def enableHermes = project.ext.react.get("enableHermes", false);
-def compressAssets = true
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
- //To compress the image assets that you have used in your app. 
-    //link: https://www.spritle.com/blogs/2019/11/28/how-to-reduce-your-reactnative-android-app-size/
-    aaptOptions { 
-        cruncherEnabled compressAssets
-
-    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -155,14 +149,13 @@ android {
     }
     buildTypes {
         debug {
-            
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://facebook.github.io/react-native/docs/signed-apk-android.
+            signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            shrinkResources true
         }
     }
     // applicationVariants are e.g. debug, release
